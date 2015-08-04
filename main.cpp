@@ -92,16 +92,16 @@ void set_motor_torque(const std_msgs::Float32::ConstPtr &torque)
 int main(int argc, char **argv)
 {
     // Check arguments
-    if (argc != 2) {
-        std::cerr << "Usage: roskhepera <ip address of robot>" << std::endl;
+    if (argc != 3) {
+        std::cerr << "Usage: roskhepera <name on ROS network> <ip address of robot>" << std::endl;
         std::cerr << std::endl;
         std::cerr << "Make sure that the robot is turned on, has the server installed and running, and that this computer is connected to the khepWaves ad-hoc Wifi network." << std::endl;
 
         return 1;
     }
 
-    ros::init(argc, argv, "khepera");
-    ros::NodeHandle node("khepera");
+    ros::init(argc, argv, argv[1]);
+    ros::NodeHandle node(argv[1]);
 
     // Subscriber for the motor topics
     sub_leftmotor = node.subscribe<std_msgs::Float32>("leftTorque", 1, &set_motor_torque<0>);
@@ -132,7 +132,7 @@ int main(int argc, char **argv)
 
     memset(&addr, 0, sizeof(addr));
 
-    addr.sin_addr.s_addr = inet_addr(argv[1]);
+    addr.sin_addr.s_addr = inet_addr(argv[2]);
     addr.sin_family = AF_INET;
     addr.sin_port = htons(1993);
 
